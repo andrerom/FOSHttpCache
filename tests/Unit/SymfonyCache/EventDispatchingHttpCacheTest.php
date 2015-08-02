@@ -11,12 +11,14 @@
 
 namespace FOS\HttpCache\Tests\Unit\SymfonyCache;
 
+use FOS\HttpCache\SymfonyCache\CacheInvalidationInterface;
 use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
 use FOS\HttpCache\SymfonyCache\CacheEvent;
 use FOS\HttpCache\SymfonyCache\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class EventDispatchingHttpCacheTest extends \PHPUnit_Framework_TestCase
@@ -27,7 +29,7 @@ class EventDispatchingHttpCacheTest extends \PHPUnit_Framework_TestCase
     protected function getHttpCachePartialMock(array $mockedMethods = null)
     {
         $mock = $this
-            ->getMockBuilder('\FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache')
+            ->getMockBuilder('\FOS\HttpCache\Tests\Unit\SymfonyCache\AppCache')
             ->setMethods( $mockedMethods )
             ->disableOriginalConstructor()
             ->getMock()
@@ -139,6 +141,16 @@ class EventDispatchingHttpCacheTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($response, $method->invokeArgs($httpCache, [$request, $catch]));
         $this->assertEquals(1, $subscriber->invalidateHits);
+    }
+}
+
+class AppCache extends HttpCache implements CacheInvalidationInterface
+{
+    use EventDispatchingHttpCache;
+
+    public function fetch(Request $request, $catch = false)
+    {
+        return $this->fetch($request, $catch);
     }
 }
 

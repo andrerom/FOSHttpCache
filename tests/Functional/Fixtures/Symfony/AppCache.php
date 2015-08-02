@@ -2,12 +2,16 @@
 
 namespace FOS\HttpCache\Tests\Functional\Fixtures\Symfony;
 
+use FOS\HttpCache\SymfonyCache\CacheInvalidationInterface;
 use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class AppCache extends EventDispatchingHttpCache
+class AppCache extends HttpCache implements CacheInvalidationInterface
 {
+    use EventDispatchingHttpCache;
+
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
         $response = parent::handle($request, $type, $catch);
@@ -24,5 +28,15 @@ class AppCache extends EventDispatchingHttpCache
         }
 
         return $response;
+    }
+
+    /**
+     * Made public to allow event subscribers to do refresh operations.
+     *
+     * {@inheritDoc}
+     */
+    public function fetch(Request $request, $catch = false)
+    {
+        return parent::fetch($request, $catch);
     }
 }

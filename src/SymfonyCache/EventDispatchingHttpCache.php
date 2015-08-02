@@ -11,16 +11,15 @@
 
 namespace FOS\HttpCache\SymfonyCache;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * Base class for enhanced Symfony reverse proxy based on the symfony component.
+ * Trait for enhanced Symfony reverse proxy based on the symfony component.
  *
  * <b>When using FOSHttpCacheBundle, look at FOS\HttpCacheBundle\HttpCache instead.</b>
  *
@@ -31,7 +30,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *
  * {@inheritdoc}
  */
-abstract class EventDispatchingHttpCache extends HttpCache implements CacheInvalidationInterface
+trait EventDispatchingHttpCache
 {
     /**
      * @var EventDispatcherInterface
