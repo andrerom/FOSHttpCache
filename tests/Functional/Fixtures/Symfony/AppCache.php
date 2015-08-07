@@ -10,7 +10,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class AppCache extends HttpCache implements CacheInvalidationInterface
 {
-    use EventDispatchingHttpCache;
+    // http://stackoverflow.com/questions/31877844/php-trait-exposing-a-method-and-interfaces
+    use EventDispatchingHttpCache {fetch as public eventTriggeringFetch;}
 
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
@@ -37,6 +38,6 @@ class AppCache extends HttpCache implements CacheInvalidationInterface
      */
     public function fetch(Request $request, $catch = false)
     {
-        return parent::fetch($request, $catch);
+        return $this->eventTriggeringFetch($request, $catch);
     }
 }

@@ -146,11 +146,11 @@ class EventDispatchingHttpCacheTest extends \PHPUnit_Framework_TestCase
 
 class AppCache extends HttpCache implements CacheInvalidationInterface
 {
-    use EventDispatchingHttpCache;
-
+    // http://stackoverflow.com/questions/31877844/php-trait-exposing-a-method-and-interfaces
+    use EventDispatchingHttpCache {fetch as public eventTriggeringFetch;}
     public function fetch(Request $request, $catch = false)
     {
-        return $this->fetch($request, $catch);
+        return $this->eventTriggeringFetch($request, $catch);
     }
 }
 
@@ -164,7 +164,7 @@ class TestSubscriber implements EventSubscriberInterface
     private $kernel;
     private $request;
 
-    public function __construct($test, $kernel, $request)
+    public function __construct(\PHPUnit_Framework_TestCase $test, $kernel, $request)
     {
         $this->test = $test;
         $this->kernel = $kernel;
